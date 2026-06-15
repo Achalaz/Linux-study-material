@@ -1,0 +1,1338 @@
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+  :root {
+    --bs-primary: #0d6efd;
+    --sidebar-width: 260px;
+  }
+  body { font-size: 14px; background: #f8f9fa; }
+  #wrapper { display: flex; min-height: 100vh; }
+  #sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    background: #1e293b;
+    color: #cbd5e1;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    background: #0f172a;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #334155;
+  }
+  .sidebar-brand .course-id { font-size: 11px; color: #38bdf8; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+  .sidebar-brand .course-name { font-size: 15px; color: #f1f5f9; font-weight: 600; margin-top: 2px; }
+  .sidebar-search { padding: .75rem 1rem; border-bottom: 1px solid #334155; }
+  .sidebar-search input {
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    font-size: 12px;
+    border-radius: 6px;
+    padding: 6px 10px;
+    width: 100%;
+  }
+  .sidebar-search input::placeholder { color: #475569; }
+  .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #475569; padding: .75rem 1rem .25rem; }
+  .nav-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 1rem;
+    color: #94a3b8;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all .15s;
+  }
+  .nav-link-item:hover { background: #334155; color: #e2e8f0; }
+  .nav-link-item.active { background: #1d4ed8; color: #fff; border-left-color: #38bdf8; }
+  .nav-link-item .badge-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #334155; color: #94a3b8;
+    font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-link-item.active .badge-num { background: #38bdf8; color: #0f172a; }
+  #main-content { flex: 1; overflow-y: auto; padding: 2rem; }
+  .section-panel { display: none; }
+  .section-panel.active { display: block; }
+  .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #0d6efd; margin-bottom: 6px; }
+  .section-title { font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+  .section-desc { font-size: 14px; color: #64748b; margin-bottom: 1.5rem; line-height: 1.6; }
+  code, pre { font-family: 'Consolas', 'Monaco', monospace; }
+  .code-card {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: .5rem 0;
+    overflow-x: auto;
+  }
+  .code-card pre { color: #e2e8f0; margin: 0; font-size: 12.5px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+  .code-card .comment { color: #64748b; }
+  .code-card .keyword { color: #38bdf8; }
+  .icode { background: #e8f4fd; color: #1d4ed8; border-radius: 4px; padding: 1px 6px; font-size: 12px; font-family: monospace; }
+  .topic-card { border: none; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1rem; }
+  .topic-card .card-header { font-size: 13px; font-weight: 600; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; border-radius: 10px 10px 0 0 !important; padding: .6rem 1rem; color: #334155; }
+  .topic-card .card-header i { color: #0d6efd; margin-right: 6px; }
+  .info-alert { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: .75rem 1rem; color: #1d4ed8; font-size: 13px; margin: .75rem 0; }
+  .warn-alert { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: .75rem 1rem; color: #92400e; font-size: 13px; margin: .75rem 0; }
+  .success-alert { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: .75rem 1rem; color: #166534; font-size: 13px; margin: .75rem 0; }
+  .stat-tile { background: #fff; border-radius: 10px; padding: 1.25rem; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .stat-tile .num { font-size: 2rem; font-weight: 700; color: #0d6efd; }
+  .stat-tile .lbl { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .perm-display { font-family: monospace; font-size: 22px; font-weight: 700; color: #0f172a; letter-spacing: 3px; background: #f1f5f9; border-radius: 8px; padding: .75rem 1.25rem; display: inline-block; }
+  .quiz-opt {
+    width: 100%; text-align: left;
+    padding: 9px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    margin: 4px 0;
+    font-size: 13px;
+    transition: all .15s;
+  }
+  .quiz-opt:hover:not(:disabled) { background: #eff6ff; border-color: #93c5fd; }
+  .quiz-opt.correct { background: #f0fdf4; border-color: #86efac; color: #166534; font-weight: 600; }
+  .quiz-opt.wrong { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+  table { font-size: 13px; }
+  .table th { background: #f1f5f9; font-weight: 600; font-size: 12px; color: #475569; }
+  .table td { vertical-align: middle; }
+  .topic-quick-card {
+    background: #fff; border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    cursor: pointer;
+    transition: box-shadow .15s, transform .15s;
+    height: 100%;
+    border-left: 4px solid #0d6efd;
+  }
+  .topic-quick-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.12); transform: translateY(-2px); }
+  .topic-quick-card .icon { font-size: 20px; color: #0d6efd; margin-bottom: .5rem; }
+  .topic-quick-card h6 { font-weight: 700; color: #1e293b; font-size: 14px; }
+  .topic-quick-card p { font-size: 12px; color: #64748b; margin: 0; }
+  @media(max-width:768px){
+    #sidebar { position: fixed; left: -260px; z-index: 1040; transition: left .25s; }
+    #sidebar.show { left: 0; }
+    #main-content { padding: 1rem; }
+  }
+</style>
+
+<div id="wrapper">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-brand">
+      <div class="course-id">ICT1261</div>
+      <div class="course-name">System Programming & Linux</div>
+    </div>
+    <div class="sidebar-search">
+      <input type="text" id="sideSearch" placeholder="&#128269; Search topics..." oninput="filterNav(this.value)">
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:.5rem 0">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-link-item active" onclick="show(0,this)" data-tags="home overview"><i class="bi bi-house-fill"></i><span class="badge-num">★</span>Home</div>
+      <div class="nav-section-label">Core Topics</div>
+      <div class="nav-link-item" onclick="show(1,this)" data-tags="shell linux bash intro"><i class="bi bi-terminal-fill"></i><span class="badge-num">1</span>Intro to Shell</div>
+      <div class="nav-link-item" onclick="show(2,this)" data-tags="features globbing metacharacters"><i class="bi bi-stars"></i><span class="badge-num">2</span>Shell Features</div>
+      <div class="nav-link-item" onclick="show(3,this)" data-tags="filesystem directories layout"><i class="bi bi-folder2-open"></i><span class="badge-num">3</span>Filesystem Layout</div>
+      <div class="nav-link-item" onclick="show(4,this)" data-tags="commands linux ls grep cat"><i class="bi bi-tools"></i><span class="badge-num">4</span>Basic Commands</div>
+      <div class="nav-link-item" onclick="show(5,this)" data-tags="io redirection pipes stdin stdout"><i class="bi bi-arrow-left-right"></i><span class="badge-num">5</span>I/O &amp; Pipes</div>
+      <div class="nav-section-label">Scripting</div>
+      <div class="nav-link-item" onclick="show(6,this)" data-tags="variables scripting echo read arithmetic"><i class="bi bi-braces"></i><span class="badge-num">6</span>Variables &amp; Scripts</div>
+      <div class="nav-link-item" onclick="show(7,this)" data-tags="arguments parameters positional shift"><i class="bi bi-list-ol"></i><span class="badge-num">7</span>Arguments &amp; Params</div>
+      <div class="nav-link-item" onclick="show(8,this)" data-tags="if case decision test condition"><i class="bi bi-signpost-split"></i><span class="badge-num">8</span>Decision Making</div>
+      <div class="nav-link-item" onclick="show(9,this)" data-tags="for while until loop break continue"><i class="bi bi-arrow-repeat"></i><span class="badge-num">9</span>Loops</div>
+      <div class="nav-link-item" onclick="show(10,this)" data-tags="functions shift devnull"><i class="bi bi-box-seam"></i><span class="badge-num">10</span>Functions</div>
+      <div class="nav-section-label">Tools</div>
+      <div class="nav-link-item" onclick="show(11,this)" data-tags="dialog ui yesno menu inputbox"><i class="bi bi-window-stack"></i><span class="badge-num">11</span>Dialog Utility</div>
+      <div class="nav-link-item" onclick="show(12,this)" data-tags="awk pattern scanning fields NR NF"><i class="bi bi-funnel-fill"></i><span class="badge-num">12</span>AWK</div>
+      <div class="nav-link-item" onclick="show(13,this)" data-tags="sed stream editor substitute delete"><i class="bi bi-pencil-square"></i><span class="badge-num">13</span>SED</div>
+      <div class="nav-link-item" onclick="show(14,this)" data-tags="process cron jobs scheduling kill ps"><i class="bi bi-clock-fill"></i><span class="badge-num">14</span>Process &amp; Cron</div>
+      <div class="nav-link-item" onclick="show(15,this)" data-tags="threads posix pthread mutex race condition"><i class="bi bi-cpu-fill"></i><span class="badge-num">15</span>POSIX Threads</div>
+      <div class="nav-link-item" onclick="show(16,this)" data-tags="permissions chmod chown octal symbolic"><i class="bi bi-shield-lock-fill"></i><span class="badge-num">16</span>Permissions</div>
+      <div class="nav-section-label">Test Yourself</div>
+      <div class="nav-link-item" onclick="show(17,this)" data-tags="quiz test practice questions"><i class="bi bi-trophy-fill"></i><span class="badge-num">★</span>Quiz</div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
+
+    <!-- Mobile toggle -->
+    <button class="btn btn-sm btn-outline-secondary d-md-none mb-3" onclick="document.getElementById('sidebar').classList.toggle('show')">
+      <i class="bi bi-list"></i> Menu
+    </button>
+
+    <!-- SECTION 0: HOME -->
+    <div class="section-panel active" id="sec0">
+      <div class="section-eyebrow">ICT1261 — Complete Study Guide</div>
+      <div class="section-title">System Programming Fundamentals & Linux</div>
+      <div class="section-desc">All 17 topics covered — shell scripting, file management, AWK/SED, processes, threads & more. Use the sidebar to navigate.</div>
+      <div class="row g-3 mb-4">
+        <div class="col-4"><div class="stat-tile"><div class="num">17</div><div class="lbl">Topics</div></div></div>
+        <div class="col-4"><div class="stat-tile"><div class="num">150+</div><div class="lbl">Commands</div></div></div>
+        <div class="col-4"><div class="stat-tile"><div class="num">10</div><div class="lbl">Quiz questions</div></div></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(1,getNav(1))"><div class="icon"><i class="bi bi-terminal-fill"></i></div><h6>Shell Basics (1–3)</h6><p>Shell types, filesystem layout, basic Linux navigation</p></div></div>
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(5,getNav(5))"><div class="icon"><i class="bi bi-arrow-left-right"></i></div><h6>I/O & Scripting (5–7)</h6><p>Redirection, pipes, variables, arguments</p></div></div>
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(8,getNav(8))"><div class="icon"><i class="bi bi-signpost-split"></i></div><h6>Control Flow (8–10)</h6><p>if/case decisions, for/while/until loops, functions</p></div></div>
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(12,getNav(12))"><div class="icon"><i class="bi bi-funnel-fill"></i></div><h6>Text Processing (12–13)</h6><p>AWK pattern scanning and SED stream editing</p></div></div>
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(14,getNav(14))"><div class="icon"><i class="bi bi-clock-fill"></i></div><h6>Processes & Cron (14)</h6><p>Process control, background jobs, scheduling</p></div></div>
+        <div class="col-sm-6 col-lg-4"><div class="topic-quick-card" onclick="show(15,getNav(15))"><div class="icon"><i class="bi bi-cpu-fill"></i></div><h6>POSIX Threads (15)</h6><p>Multithreading, race conditions, mutex locks</p></div></div>
+      </div>
+      <div class="info-alert mt-3"><i class="bi bi-lightbulb-fill me-1"></i><strong>Study tip:</strong> After reading each section, head to the <strong>Quiz</strong> to test your knowledge. The <strong>Permissions</strong> section has an interactive chmod calculator.</div>
+    </div>
+
+    <!-- SECTION 1: SHELL INTRO -->
+    <div class="section-panel" id="sec1">
+      <div class="section-eyebrow">Part 1</div>
+      <div class="section-title">Introduction to Linux & the Shell</div>
+      <div class="section-desc">A shell is the intermediary between you and the OS kernel — it accepts commands, passes them on, and shows you results.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-arrow-right-circle-fill"></i>Shell–Kernel interaction</div>
+        <div class="card-body">
+          <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="badge bg-primary">User input</span><i class="bi bi-arrow-right text-muted"></i>
+            <span class="badge bg-primary">Shell interprets</span><i class="bi bi-arrow-right text-muted"></i>
+            <span class="badge bg-warning text-dark">Kernel executes</span><i class="bi bi-arrow-right text-muted"></i>
+            <span class="badge bg-primary">Shell shows output</span><i class="bi bi-arrow-right text-muted"></i>
+            <span class="badge bg-success">Waits for next command</span>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-list-ul"></i>Types of shells</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Shell</th><th>Short</th><th>Prompt</th></tr></thead>
+                <tbody>
+                  <tr><td>Bourne Shell</td><td><code>sh</code></td><td><code>$</code></td></tr>
+                  <tr><td>C Shell</td><td><code>csh</code></td><td><code>%</code></td></tr>
+                  <tr><td><strong>Bash ★</strong></td><td><code>bash</code></td><td><code>$</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-terminal"></i>Shell management</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><code>cat /etc/shells</code></td><td>List all shells</td></tr>
+                  <tr><td><code>echo $SHELL</code></td><td>Show current shell</td></tr>
+                  <tr><td><code>chsh</code></td><td>Change login shell</td></tr>
+                  <tr><td><code>Ctrl+D</code></td><td>Return to previous shell</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card mt-3">
+        <div class="card-header"><i class="bi bi-file-code-fill"></i>Your first shell script</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <h6 class="fw-semibold text-muted small text-uppercase">1 — Create file</h6>
+              <div class="code-card"><pre>#!/bin/bash
+# My first script
+echo "Hello World"</pre></div>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-semibold text-muted small text-uppercase">2 — Make executable</h6>
+              <div class="code-card"><pre>chmod u+x first
+# or
+chmod 755 first</pre></div>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-semibold text-muted small text-uppercase">3 — Run it</h6>
+              <div class="code-card"><pre>bash first
+./first
+. first</pre></div>
+            </div>
+          </div>
+          <div class="warn-alert mt-2"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>Linux is case-sensitive!</strong> <code>cat</code>, <code>Cat</code>, and <code>CAT</code> are three different commands.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: SHELL FEATURES -->
+    <div class="section-panel" id="sec2">
+      <div class="section-eyebrow">Part 2</div>
+      <div class="section-title">Important Shell Features</div>
+      <div class="section-desc">Globbing, command grouping, backticks, and controlling how metacharacters are interpreted.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-asterisk"></i>Filename substitution (Globbing)</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Pattern</th><th>Matches</th><th>Example</th></tr></thead>
+                <tbody>
+                  <tr><td><code>*</code></td><td>Zero or more chars</td><td><code>ls *.txt</code></td></tr>
+                  <tr><td><code>?</code></td><td>Any single char</td><td><code>ls a?.txt</code></td></tr>
+                  <tr><td><code>[abc]</code></td><td>Any char in set</td><td><code>ls [abc].txt</code></td></tr>
+                  <tr><td><code>[x-z]</code></td><td>Any char in range</td><td><code>ls [a-d].txt</code></td></tr>
+                  <tr><td><code>[!abc]</code></td><td>NOT in set</td><td><code>ls [!abc].txt</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-code-slash"></i>Command tricks</div>
+            <div class="card-body">
+              <div class="small fw-semibold text-muted mb-1">Multiple commands</div>
+              <div class="code-card"><pre>whoami; date; pwd</pre></div>
+              <div class="small fw-semibold text-muted mb-1 mt-2">Command grouping</div>
+              <div class="code-card"><pre>(date; ls; pwd) > file.txt</pre></div>
+              <div class="small fw-semibold text-muted mb-1 mt-2">Backtick / command substitution</div>
+              <div class="code-card"><pre>echo "Today is `date`"
+var=$(ls -l)   # modern syntax</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card mt-3">
+        <div class="card-header"><i class="bi bi-shield-check"></i>Neutralizing metacharacters</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Method</th><th>Effect</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><code>\</code> backslash</td><td>Escape next character only</td><td><code>echo \$USER</code> → $USER</td></tr>
+              <tr><td><code>' '</code> single quotes</td><td>Everything is literal</td><td><code>echo '$USER *'</code> → $USER *</td></tr>
+              <tr><td><code>" "</code> double quotes</td><td>Literal except $, `, \</td><td><code>echo "$USER"</code> → john</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: FILESYSTEM -->
+    <div class="section-panel" id="sec3">
+      <div class="section-eyebrow">Part 3</div>
+      <div class="section-title">Linux Filesystem Layout</div>
+      <div class="section-desc">Linux uses a single unified tree starting at <code>/</code> (root). Every file, device, and directory lives somewhere inside this tree.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-folder2-open"></i>Key directories</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Directory</th><th>Contents / Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>/bin</code></td><td>Essential user commands (ls, pwd, bash)</td></tr>
+              <tr><td><code>/boot</code></td><td>Kernel and bootloader files</td></tr>
+              <tr><td><code>/dev</code></td><td>Device files (hard drives, terminals, printers)</td></tr>
+              <tr><td><code>/etc</code></td><td>System-wide configuration files</td></tr>
+              <tr><td><code>/home</code></td><td>Home directories for all regular users</td></tr>
+              <tr><td><code>/lib</code></td><td>Shared libraries for /bin and /sbin</td></tr>
+              <tr><td><code>/media</code></td><td>Mount point for removable media (USB, CD)</td></tr>
+              <tr><td><code>/mnt</code></td><td>Mount point for temporary filesystems</td></tr>
+              <tr><td><code>/opt</code></td><td>Optional third-party software</td></tr>
+              <tr><td><code>/proc</code></td><td>Virtual filesystem showing kernel state (e.g. /proc/meminfo)</td></tr>
+              <tr><td><code>/root</code></td><td>Home directory of the root superuser</td></tr>
+              <tr><td><code>/sbin</code></td><td>System administration commands (root only)</td></tr>
+              <tr><td><code>/tmp</code></td><td>Temporary files — writable by all, cleared on reboot</td></tr>
+              <tr><td><code>/usr</code></td><td>Non-essential programs, libraries, docs — usually the largest</td></tr>
+              <tr><td><code>/var</code></td><td>Variable data: logs, spools, backups</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-link-45deg"></i>Hard vs soft links</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Feature</th><th>Hard</th><th>Soft</th></tr></thead>
+                <tbody>
+                  <tr><td>Command</td><td><code>ln f l</code></td><td><code>ln -s f l</code></td></tr>
+                  <tr><td>Same inode?</td><td>Yes</td><td>No</td></tr>
+                  <tr><td>If original deleted</td><td>Still works</td><td><span class="text-danger">Broken!</span></td></tr>
+                  <tr><td>Cross filesystem</td><td>No</td><td>Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-tools"></i>Filesystem utilities</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+                <tbody>
+                  <tr><td><code>mkfs</code></td><td>Build a filesystem</td></tr>
+                  <tr><td><code>fsck</code></td><td>Check &amp; repair filesystem</td></tr>
+                  <tr><td><code>df -h</code></td><td>Disk free space</td></tr>
+                  <tr><td><code>du -sh /home</code></td><td>Disk usage of /home</td></tr>
+                  <tr><td><code>/etc/fstab</code></td><td>Mount config file</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: COMMANDS -->
+    <div class="section-panel" id="sec4">
+      <div class="section-eyebrow">Part 4</div>
+      <div class="section-title">Basic Linux Commands</div>
+      <div class="section-desc">The essential toolkit — navigation, file operations, text search, and system info.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-compass-fill"></i>Navigation</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><code>pwd</code></td><td>Print working directory</td></tr>
+                  <tr><td><code>cd</code></td><td>Go home</td></tr>
+                  <tr><td><code>cd ..</code></td><td>Go up one level</td></tr>
+                  <tr><td><code>cd ~</code></td><td>Go to home directory</td></tr>
+                  <tr><td><code>ls -al</code></td><td>List all files with details</td></tr>
+                  <tr><td><code>ls -F</code></td><td>Show file types (/ for dirs)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-files"></i>File operations</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><code>touch file</code></td><td>Create empty file</td></tr>
+                  <tr><td><code>cp -i src dst</code></td><td>Copy (prompt on overwrite)</td></tr>
+                  <tr><td><code>mv src dst</code></td><td>Move or rename</td></tr>
+                  <tr><td><code>rm -r dir</code></td><td>Remove recursively</td></tr>
+                  <tr><td><code>mkdir -p a/b/c</code></td><td>Create nested dirs</td></tr>
+                  <tr><td><code>find . -name *.jpg</code></td><td>Find files by name</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-search"></i>Text &amp; search</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><code>grep -i pat f</code></td><td>Search (ignore case)</td></tr>
+                  <tr><td><code>grep -v pat f</code></td><td>Invert match</td></tr>
+                  <tr><td><code>grep -n pat f</code></td><td>Show line numbers</td></tr>
+                  <tr><td><code>wc -l file</code></td><td>Count lines</td></tr>
+                  <tr><td><code>diff f1 f2</code></td><td>Compare line by line</td></tr>
+                  <tr><td><code>cmp f1 f2</code></td><td>Compare byte by byte</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-info-circle-fill"></i>System info</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+                <tbody>
+                  <tr><td><code>whoami</code></td><td>Current username</td></tr>
+                  <tr><td><code>date</code></td><td>System date &amp; time</td></tr>
+                  <tr><td><code>date -u</code></td><td>UTC/GMT time</td></tr>
+                  <tr><td><code>cal 2026</code></td><td>Full year calendar</td></tr>
+                  <tr><td><code>which bash</code></td><td>Path of a command</td></tr>
+                  <tr><td><code>whereis sh</code></td><td>Binary + man page path</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card mt-3">
+        <div class="card-header"><i class="bi bi-archive-fill"></i>tar &amp; gzip</div>
+        <div class="card-body">
+          <div class="code-card"><pre>tar -czvf archive.tar.gz /path/to/dir   <span class="comment"># create compressed archive</span>
+tar -xzvf archive.tar.gz                <span class="comment"># extract archive</span></pre></div>
+          <div class="row mt-2 g-2">
+            <div class="col-auto"><span class="badge bg-secondary">c = create</span></div>
+            <div class="col-auto"><span class="badge bg-secondary">x = extract</span></div>
+            <div class="col-auto"><span class="badge bg-secondary">z = gzip</span></div>
+            <div class="col-auto"><span class="badge bg-secondary">v = verbose</span></div>
+            <div class="col-auto"><span class="badge bg-secondary">f = filename</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: IO & PIPES -->
+    <div class="section-panel" id="sec5">
+      <div class="section-eyebrow">Part 5</div>
+      <div class="section-title">I/O Redirection &amp; Pipes</div>
+      <div class="section-desc">Every process has three standard streams. Redirection rewires them; pipes chain processes together.</div>
+      <div class="row g-3 mb-3">
+        <div class="col-4"><div class="stat-tile"><div class="num" style="font-size:1.1rem"><code>stdin (0)</code></div><div class="lbl">Keyboard input</div></div></div>
+        <div class="col-4"><div class="stat-tile"><div class="num" style="font-size:1.1rem"><code>stdout (1)</code></div><div class="lbl">Normal output</div></div></div>
+        <div class="col-4"><div class="stat-tile"><div class="num" style="font-size:1.1rem"><code>stderr (2)</code></div><div class="lbl">Error messages</div></div></div>
+      </div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-arrow-left-right"></i>Redirection operators</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><code>></code></td><td>Redirect stdout (overwrite)</td><td><code>ls > out.txt</code></td></tr>
+              <tr><td><code>>></code></td><td>Append stdout</td><td><code>echo hi >> out.txt</code></td></tr>
+              <tr><td><code>&lt;</code></td><td>Redirect stdin from file</td><td><code>sort &lt; data.txt</code></td></tr>
+              <tr><td><code>2></code></td><td>Redirect stderr</td><td><code>cmd 2> err.log</code></td></tr>
+              <tr><td><code>&></code></td><td>Both stdout &amp; stderr</td><td><code>cmd &> all.log</code></td></tr>
+              <tr><td><code>2>&amp;1</code></td><td>Merge stderr into stdout</td><td><code>cmd > out.log 2>&amp;1</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-pipe"></i>Pipelines</div>
+            <div class="card-body">
+              <div class="code-card"><pre>who | sort > sorted_users.txt
+ls -l | sort | head -5
+date | cut -f1 -d" "
+du | sort -nr</pre></div>
+              <div class="info-alert mt-2"><i class="bi bi-lightbulb-fill me-1"></i>Pipes connect <strong>stdout</strong> of one command to <strong>stdin</strong> of the next.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-trash-fill"></i>/dev/null — the black hole</div>
+            <div class="card-body">
+              <div class="code-card"><pre>ls > /dev/null
+cmd > /dev/null 2>&amp;1</pre></div>
+              <p class="small text-muted mt-2 mb-0">Anything sent to <code>/dev/null</code> is permanently discarded — useful for silencing unwanted output.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: VARIABLES -->
+    <div class="section-panel" id="sec6">
+      <div class="section-eyebrow">Part 6</div>
+      <div class="section-title">Shell Variables &amp; Interactive Scripts</div>
+      <div class="section-desc">Variables store data; read makes scripts interactive; $(( )) handles arithmetic.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-braces"></i>Variable basics</div>
+            <div class="card-body">
+              <div class="code-card"><pre>name=value          <span class="comment"># no spaces!</span>
+echo $name
+fullname="Sunil S"  <span class="comment"># quotes for spaces</span>
+NAME=$(echo $USER)  <span class="comment"># command output</span></pre></div>
+              <div class="warn-alert mt-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>No spaces around <code>=</code>! <code>name = value</code> is an error.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-globe"></i>Environment vs Shell variables</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th></th><th>Environment</th><th>Shell (local)</th></tr></thead>
+                <tbody>
+                  <tr><td>Scope</td><td>Global (child shells)</td><td>Current shell only</td></tr>
+                  <tr><td>Convention</td><td>UPPERCASE</td><td>lowercase</td></tr>
+                  <tr><td>View all</td><td><code>env</code></td><td><code>set</code></td></tr>
+                  <tr><td>Promote</td><td colspan="2"><code>export OS=Linux</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-calculator-fill"></i>Arithmetic</div>
+            <div class="card-body">
+              <div class="code-card"><pre>num=3
+echo $(( $num + 2 ))  <span class="comment"># → 5</span>
+echo $(( 10 * 3 ))    <span class="comment"># → 30</span>
+echo $(( 10 % 3 ))    <span class="comment"># → 1 (modulus)</span>
+expr 4 \* 5           <span class="comment"># → 20 (legacy)</span></pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-keyboard-fill"></i>Interactive: read</div>
+            <div class="card-body">
+              <div class="code-card"><pre>read -p "Enter name: " name
+read -s -p "Password: " pass
+echo "Hello $name"</pre></div>
+              <div class="code-card mt-2"><pre>echo -e "Hello\tWorld"   <span class="comment"># tab</span>
+echo -e "Line1\nLine2"  <span class="comment"># newline</span>
+echo -n "No newline"</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card mt-3">
+        <div class="card-header"><i class="bi bi-gear-fill"></i>Bash config files</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>File</th><th>When executed</th></tr></thead>
+            <tbody>
+              <tr><td><code>~/.bash_profile</code></td><td>Once, after login — set environment variables here</td></tr>
+              <tr><td><code>~/.bashrc</code></td><td>Every time a new bash shell starts</td></tr>
+              <tr><td><code>~/.bash_logout</code></td><td>When you log out</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 7: ARGUMENTS -->
+    <div class="section-panel" id="sec7">
+      <div class="section-eyebrow">Part 7</div>
+      <div class="section-title">Script Arguments &amp; Special Variables</div>
+      <div class="section-desc">Positional parameters let scripts accept command-line input. Special variables give you runtime information.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-hash"></i>Positional parameters &amp; special variables</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Variable</th><th>Meaning</th><th>Example (<code>./script a b c</code>)</th></tr></thead>
+            <tbody>
+              <tr><td><code>$0</code></td><td>Script name</td><td><code>./script</code></td></tr>
+              <tr><td><code>$1 $2 ...</code></td><td>Arguments</td><td><code>a b c</code></td></tr>
+              <tr><td><code>$#</code></td><td>Number of arguments</td><td><code>3</code></td></tr>
+              <tr><td><code>$*</code></td><td>All args as ONE string</td><td><code>"a b c"</code></td></tr>
+              <tr><td><code>$@</code></td><td>All args as separate words</td><td><code>"a" "b" "c"</code></td></tr>
+              <tr><td><code>$?</code></td><td>Exit status of last command</td><td>0 = success</td></tr>
+              <tr><td><code>$$</code></td><td>PID of current shell</td><td>1234</td></tr>
+              <tr><td><code>$!</code></td><td>PID of last background job</td><td>5678</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-chevron-double-left"></i>shift command</div>
+            <div class="card-body">
+              <div class="code-card"><pre>echo $1     <span class="comment"># first arg</span>
+shift
+echo $1     <span class="comment"># now was $2</span>
+shift 2
+echo $1     <span class="comment"># skipped 2 more</span></pre></div>
+              <div class="info-alert mt-2"><i class="bi bi-info-circle-fill me-1"></i>Use <code>shift</code> inside while loops to process arguments one at a time.</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-bug-fill"></i>Debugging scripts</div>
+            <div class="card-body">
+              <div class="code-card"><pre>bash -x script.sh  <span class="comment"># trace mode</span>
+bash -v script.sh  <span class="comment"># verbose mode</span>
+
+<span class="comment"># inside script:</span>
+set -x             <span class="comment"># turn trace on</span>
+set +x             <span class="comment"># turn trace off</span></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 8: DECISION MAKING -->
+    <div class="section-panel" id="sec8">
+      <div class="section-eyebrow">Part 8</div>
+      <div class="section-title">Decision Making — test, if, case</div>
+      <div class="section-desc">Conditional logic lets your scripts make decisions based on values, strings, or file states.</div>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-123"></i>Numeric operators</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Op</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code>-eq</code></td><td>Equal</td></tr>
+                  <tr><td><code>-ne</code></td><td>Not equal</td></tr>
+                  <tr><td><code>-gt</code></td><td>Greater than</td></tr>
+                  <tr><td><code>-ge</code></td><td>Greater or equal</td></tr>
+                  <tr><td><code>-lt</code></td><td>Less than</td></tr>
+                  <tr><td><code>-le</code></td><td>Less or equal</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-fonts"></i>String operators</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Op</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code>=</code></td><td>Strings equal</td></tr>
+                  <tr><td><code>!=</code></td><td>Not equal</td></tr>
+                  <tr><td><code>-z</code></td><td>String is empty</td></tr>
+                  <tr><td><code>-n</code></td><td>String not empty</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-file-earmark-check"></i>File tests</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Op</th><th>Meaning</th></tr></thead>
+                <tbody>
+                  <tr><td><code>-f</code></td><td>Regular file</td></tr>
+                  <tr><td><code>-d</code></td><td>Directory</td></tr>
+                  <tr><td><code>-r</code></td><td>Readable</td></tr>
+                  <tr><td><code>-w</code></td><td>Writable</td></tr>
+                  <tr><td><code>-x</code></td><td>Executable</td></tr>
+                  <tr><td><code>-s</code></td><td>Size &gt; 0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3 mt-1">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-signpost-split-fill"></i>if / elif / else</div>
+            <div class="card-body">
+              <div class="code-card"><pre>if [ "$1" -gt 100 ]; then
+    echo "Greater than 100"
+elif [ "$1" -eq 100 ]; then
+    echo "Equal to 100"
+else
+    echo "Less than 100"
+fi</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-list-check"></i>case statement</div>
+            <div class="card-body">
+              <div class="code-card"><pre>case $1 in
+    start) echo "Starting";;
+    stop)  echo "Stopping";;
+    restart) echo "Restarting";;
+    *) echo "Usage: {start|stop}";;
+esac</pre></div>
+              <div class="info-alert mt-2"><i class="bi bi-info-circle-fill me-1"></i>Ideal for menu-driven scripts. Each pattern ends with <code>)</code> and each block ends with <code>;;</code></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 9: LOOPS -->
+    <div class="section-panel" id="sec9">
+      <div class="section-eyebrow">Part 9</div>
+      <div class="section-title">Looping Structures</div>
+      <div class="section-desc">for, while, and until — each suits a different scenario. while loops while TRUE, until loops while FALSE.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-arrow-repeat"></i>for loop — list style</div>
+            <div class="card-body">
+              <div class="code-card"><pre>for num in 1 2 3 4 5; do
+    echo $num
+done
+
+for i in {1..10}; do
+    echo $i
+done
+
+for file in *.txt; do
+    echo "Processing $file"
+done</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-arrow-repeat"></i>for loop — C style</div>
+            <div class="card-body">
+              <div class="code-card"><pre>for ((i=0; i&lt;=5; i++)); do
+    echo $i
+done
+
+<span class="comment"># Nested loops</span>
+for ((i=1; i&lt;=3; i++)); do
+    for ((j=1; j&lt;=3; j++)); do
+        echo -n "$i×$j "
+    done; echo
+done</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-clock-history"></i>while loop</div>
+            <div class="card-body">
+              <div class="code-card"><pre>counter=1
+while [ $counter -le 10 ]; do
+    echo $counter
+    ((counter++))
+done
+
+<span class="comment"># Read file line by line</span>
+while read LINE; do
+    echo $LINE
+done &lt; /etc/passwd</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-arrow-clockwise"></i>until + break/continue</div>
+            <div class="card-body">
+              <div class="code-card"><pre>until [ $counter -gt 10 ]; do
+    echo $counter
+    ((counter++))
+done</pre></div>
+              <div class="code-card mt-2"><pre>for i in 1 2 3 4 5; do
+    [ $i -eq 3 ] && break
+    echo $i       <span class="comment"># prints 1 2</span>
+done</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 10: FUNCTIONS -->
+    <div class="section-panel" id="sec10">
+      <div class="section-eyebrow">Part 10</div>
+      <div class="section-title">Functions</div>
+      <div class="section-desc">Functions group reusable commands, keep scripts modular, and accept arguments via $1, $2 etc.</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-box-seam"></i>Defining &amp; calling</div>
+            <div class="card-body">
+              <div class="code-card"><pre>greet() {
+    echo "Hello $1, welcome!"
+    return 0
+}
+
+function add() {
+    echo $(( $1 + $2 ))
+}
+
+greet "World"   <span class="comment"># → Hello World, welcome!</span>
+add 5 3         <span class="comment"># → 8</span>
+
+<span class="comment"># Capture return data</span>
+result=$(add 5 3)
+echo "Sum is $result"</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-info-circle-fill"></i>Key rules</div>
+            <div class="card-body">
+              <ul class="small mb-3">
+                <li>Functions must be <strong>defined before</strong> they are called</li>
+                <li><code>$1, $2,</code> etc. inside a function refer to <strong>function arguments</strong>, not script args</li>
+                <li><code>return</code> exits the function; <code>exit</code> exits the whole script</li>
+                <li>Return values are status codes (0–255) — use <code>echo</code> + <code>$()</code> to pass data</li>
+              </ul>
+              <h6 class="fw-semibold small text-muted text-uppercase">shift inside functions</h6>
+              <div class="code-card"><pre>process_all() {
+    while [ $# -gt 0 ]; do
+        echo "Arg: $1"
+        shift
+    done
+}
+process_all apple banana cherry</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 11: DIALOG -->
+    <div class="section-panel" id="sec11">
+      <div class="section-eyebrow">Part 11</div>
+      <div class="section-title">Dialog Utility</div>
+      <div class="section-desc">The <code>dialog</code> command creates terminal UI widgets — messages, menus, input fields, calendars, and more.</div>
+      <div class="code-card mb-3"><pre>sudo apt install dialog
+dialog --title "Title" --backtitle "Back" {box-options}</pre></div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-window-stack"></i>Box types</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Box type</th><th>Description</th><th>Exit status</th></tr></thead>
+            <tbody>
+              <tr><td><code>--msgbox</code></td><td>Message with OK button</td><td>0</td></tr>
+              <tr><td><code>--infobox</code></td><td>Temporary info (no button)</td><td>0</td></tr>
+              <tr><td><code>--yesno</code></td><td>Yes/No confirmation</td><td>0=Yes, 1=No, 255=ESC</td></tr>
+              <tr><td><code>--inputbox</code></td><td>Text input field</td><td>Output to stderr</td></tr>
+              <tr><td><code>--textbox</code></td><td>Display file content</td><td>0</td></tr>
+              <tr><td><code>--menu</code></td><td>Menu selection</td><td>Choice to stderr</td></tr>
+              <tr><td><code>--checklist</code></td><td>Multiple selection</td><td>Choices to stderr</td></tr>
+              <tr><td><code>--radiolist</code></td><td>Single selection</td><td>Choice to stderr</td></tr>
+              <tr><td><code>--calendar</code></td><td>Date picker</td><td>Date to stderr</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-check2-circle"></i>yesno exit status</div>
+            <div class="card-body">
+              <div class="code-card"><pre>dialog --yesno "Continue?" 10 30
+case $? in
+    0)   echo "Yes chosen";;
+    1)   echo "No chosen";;
+    255) echo "ESC pressed";;
+esac</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-input-cursor-text"></i>Input &amp; menu capture</div>
+            <div class="card-body">
+              <div class="code-card"><pre>dialog --inputbox "Name:" 8 40 \
+    2>/tmp/answer
+name=$(cat /tmp/answer)
+
+dialog --menu "Pick:" 10 30 3 \
+    1 red 2 green 3 blue \
+    2>/tmp/choice</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 12: AWK -->
+    <div class="section-panel" id="sec12">
+      <div class="section-eyebrow">Part 12</div>
+      <div class="section-title">AWK — Pattern Scanning &amp; Processing</div>
+      <div class="section-desc">AWK (Aho, Weinberger, Kernighan) treats text as structured records and fields — ideal for data extraction and reports.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-code-slash"></i>Syntax &amp; built-in variables</div>
+        <div class="card-body">
+          <div class="code-card mb-3"><pre>awk '/pattern/ { action }' file
+<span class="comment"># No pattern → action runs on every line</span>
+<span class="comment"># No action  → default action is print</span></pre></div>
+          <div class="table-wrap">
+            <table class="table table-hover mb-0">
+              <thead><tr><th>Variable</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>$0</code></td><td>Entire current line</td></tr>
+                <tr><td><code>$1, $2, ...</code></td><td>Individual fields (whitespace-separated by default)</td></tr>
+                <tr><td><code>NF</code></td><td>Number of fields in current record</td></tr>
+                <tr><td><code>NR</code></td><td>Current line number</td></tr>
+                <tr><td><code>FS</code></td><td>Field separator (change with -F)</td></tr>
+                <tr><td><code>$NF</code></td><td>Last field</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card">
+        <div class="card-header"><i class="bi bi-code-square"></i>AWK examples</div>
+        <div class="card-body">
+          <div class="code-card"><pre>awk '{print}' file                   <span class="comment"># print all lines</span>
+awk '{print $2, $5}' file            <span class="comment"># print fields 2 and 5</span>
+awk '{print $NF}' file               <span class="comment"># print last field</span>
+awk '/Nihal/ || /Nishadi/' file      <span class="comment"># match patterns</span>
+awk '$1 > 200' file                  <span class="comment"># numeric condition</span>
+awk '$4 ~ /Technology/' file         <span class="comment"># field matches regex</span>
+awk -F: '{print $1}' /etc/passwd     <span class="comment"># colon separator</span>
+
+<span class="comment"># BEGIN and END</span>
+awk 'BEGIN {print "Name\tSalary"}
+     {print $2, $5}
+     END {print "Report done"}' emp.txt
+
+<span class="comment"># Count matching lines</span>
+awk 'BEGIN {c=0} $4~/Tech/{c++} END{print "Count:",c}' emp.txt</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 13: SED -->
+    <div class="section-panel" id="sec13">
+      <div class="section-eyebrow">Part 13</div>
+      <div class="section-title">SED — Stream Editor</div>
+      <div class="section-desc">SED edits files without opening them — perfect for find-and-replace, deletion, and transformation at scale.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-pencil-square"></i>Substitute command s///</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Command</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td><code>sed 's/unix/linux/' file</code></td><td>Replace first occurrence per line</td></tr>
+              <tr><td><code>sed 's/unix/linux/2' file</code></td><td>Replace second occurrence per line</td></tr>
+              <tr><td><code>sed 's/unix/linux/g' file</code></td><td>Replace ALL occurrences (global)</td></tr>
+              <tr><td><code>sed '3 s/unix/linux/' file</code></td><td>Replace only on line 3</td></tr>
+              <tr><td><code>sed '1,3 s/unix/linux/' file</code></td><td>Replace on lines 1–3 only</td></tr>
+              <tr><td><code>sed -n 's/unix/linux/p' file</code></td><td>Print only changed lines</td></tr>
+              <tr><td><code>sed -i 's/unix/linux/g' file</code></td><td>Edit in-place (modifies original!)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-trash-fill"></i>Delete commands</div>
+            <div class="card-body">
+              <div class="code-card"><pre>sed '5d' file         <span class="comment"># delete line 5</span>
+sed '12,$d' file      <span class="comment"># line 12 to end</span>
+sed '/abc/d' file     <span class="comment"># lines matching abc</span>
+sed '/^$/d' file      <span class="comment"># empty lines</span></pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-plus-circle-fill"></i>Other commands</div>
+            <div class="card-body">
+              <div class="code-card"><pre>sed G file            <span class="comment"># blank line after each</span>
+sed -n '5,10p' file   <span class="comment"># print lines 5-10</span>
+sed '3i\New line' f   <span class="comment"># insert before line 3</span>
+sed '3a\New line' f   <span class="comment"># append after line 3</span></pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="warn-alert mt-1"><i class="bi bi-exclamation-triangle-fill me-1"></i><strong>-i warning:</strong> <code>sed -i</code> modifies the original file permanently. Always back up first: <code>cp file file.bak</code></div>
+    </div>
+
+    <!-- SECTION 14: PROCESS & CRON -->
+    <div class="section-panel" id="sec14">
+      <div class="section-eyebrow">Part 14</div>
+      <div class="section-title">Process Management &amp; Cron</div>
+      <div class="section-desc">Every running program is a process. Cron lets you schedule them to run automatically at specific times.</div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-activity"></i>Process commands</div>
+            <div class="card-body">
+              <div class="code-card"><pre>ps -ef           <span class="comment"># list all processes</span>
+kill PID         <span class="comment"># terminate (SIGTERM)</span>
+kill -9 PID      <span class="comment"># force kill (SIGKILL)</span>
+sleep 100 &amp;     <span class="comment"># run in background</span>
+jobs             <span class="comment"># list background jobs</span>
+fg %1            <span class="comment"># bring job 1 to foreground</span>
+bg %1            <span class="comment"># resume bg job 1</span></pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-clock-fill"></i>Crontab commands</div>
+            <div class="card-body">
+              <div class="code-card"><pre>crontab -e    <span class="comment"># edit cron jobs</span>
+crontab -l    <span class="comment"># list cron jobs</span>
+crontab -r    <span class="comment"># remove all</span></pre></div>
+              <div class="code-card mt-2"><pre><span class="comment"># Check &amp; start cron</span>
+dpkg -l cron
+systemctl status cron
+systemctl restart cron</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card topic-card">
+        <div class="card-header"><i class="bi bi-calendar-event-fill"></i>Crontab format &amp; examples</div>
+        <div class="card-body">
+          <div class="code-card mb-3"><pre>minute  hour  day_of_month  month  day_of_week  command
+ 0-59   0-23      1-31       1-12     0-7 (0=Sun)</pre></div>
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Crontab entry</th><th>When it runs</th></tr></thead>
+            <tbody>
+              <tr><td><code>30 8 * * * /home/user/backup.sh</code></td><td>Every day at 8:30 AM</td></tr>
+              <tr><td><code>0 4,10,16 * * wed,sat script</code></td><td>4 AM, 10 AM, 4 PM on Wed &amp; Sat</td></tr>
+              <tr><td><code>*/2 * * * * mkdir /tmp/test1</code></td><td>Every 2 minutes</td></tr>
+              <tr><td><code>0 0 * * 0 /scripts/weekly.sh</code></td><td>Every Sunday at midnight</td></tr>
+              <tr><td><code>* * * * * date >> /tmp/date.txt</code></td><td>Every minute, append date</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 15: THREADS -->
+    <div class="section-panel" id="sec15">
+      <div class="section-eyebrow">Part 15</div>
+      <div class="section-title">POSIX Threads (pthreads)</div>
+      <div class="section-desc">Threads are lightweight execution units inside a process — they share the same memory space and run concurrently.</div>
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-cpu-fill"></i>Process vs Thread</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Feature</th><th>Process</th><th>Thread</th></tr></thead>
+                <tbody>
+                  <tr><td>Memory</td><td>Own (separate)</td><td>Shared</td></tr>
+                  <tr><td>Weight</td><td>Heavy</td><td>Lightweight</td></tr>
+                  <tr><td>Context switch</td><td>Slow</td><td>Fast</td></tr>
+                  <tr><td>Creation</td><td><code>fork()</code></td><td><code>pthread_create()</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-tools"></i>pthread functions</div>
+            <div class="card-body p-0">
+              <table class="table table-hover mb-0">
+                <thead><tr><th>Function</th><th>Purpose</th></tr></thead>
+                <tbody>
+                  <tr><td><code>pthread_create()</code></td><td>Create a new thread</td></tr>
+                  <tr><td><code>pthread_join()</code></td><td>Wait for thread to finish</td></tr>
+                  <tr><td><code>pthread_exit()</code></td><td>Terminate calling thread</td></tr>
+                  <tr><td><code>pthread_mutex_lock()</code></td><td>Lock a mutex</td></tr>
+                  <tr><td><code>pthread_mutex_unlock()</code></td><td>Unlock a mutex</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-file-code-fill"></i>Simple thread example</div>
+            <div class="card-body">
+              <div class="code-card"><pre>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+void* addition(void* arg) {
+    printf("Sum = %d\n", 10+20);
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t t1;
+    pthread_create(&t1, NULL, addition, NULL);
+    pthread_join(t1, NULL);
+    return 0;
+}
+
+<span class="comment">// Compile:</span>
+gcc program.c -o program -pthread</pre></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card topic-card">
+            <div class="card-header"><i class="bi bi-lock-fill"></i>Race condition &amp; mutex fix</div>
+            <div class="card-body">
+              <div class="code-card"><pre><span class="comment">// WITHOUT mutex — RACE CONDITION!</span>
+int counter = 0;
+void* inc(void* arg) {
+    for(int i=0;i&lt;100000;i++)
+        counter++;  <span class="comment">// unsafe!</span>
+}
+
+<span class="comment">// WITH mutex — correct</span>
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+void* inc_safe(void* arg) {
+    for(int i=0;i&lt;100000;i++) {
+        pthread_mutex_lock(&m);
+        counter++;
+        pthread_mutex_unlock(&m);
+    }
+}</pre></div>
+              <div class="warn-alert mt-2"><i class="bi bi-exclamation-triangle-fill me-1"></i>Without mutex, two threads can produce a result <em>less</em> than 200,000 due to race conditions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 16: PERMISSIONS -->
+    <div class="section-panel" id="sec16">
+      <div class="section-eyebrow">Part 16 — Interactive</div>
+      <div class="section-title">File Permissions &amp; chmod Calculator</div>
+      <div class="section-desc">Every file has read (r=4), write (w=2), execute (x=1) permissions for owner, group, and others.</div>
+      <div class="card topic-card mb-3">
+        <div class="card-header"><i class="bi bi-calculator-fill"></i>Interactive chmod calculator</div>
+        <div class="card-body">
+          <div class="mb-3"><div class="perm-display" id="pdisplay">- rwx rw- r--</div></div>
+          <div class="row g-3 mb-3">
+            <div class="col-4">
+              <div class="card border-primary border-1 rounded-3">
+                <div class="card-header bg-primary text-white py-1 small fw-bold">Owner (u)</div>
+                <div class="card-body py-2">
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="ur" onchange="calcPerm()"><label class="form-check-label small" for="ur">Read (r=4)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="uw" onchange="calcPerm()"><label class="form-check-label small" for="uw">Write (w=2)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="ux" onchange="calcPerm()"><label class="form-check-label small" for="ux">Execute (x=1)</label></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card border-success border-1 rounded-3">
+                <div class="card-header bg-success text-white py-1 small fw-bold">Group (g)</div>
+                <div class="card-body py-2">
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="gr" onchange="calcPerm()"><label class="form-check-label small" for="gr">Read (r=4)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="gw" onchange="calcPerm()"><label class="form-check-label small" for="gw">Write (w=2)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="gx" onchange="calcPerm()"><label class="form-check-label small" for="gx">Execute (x=1)</label></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="card border-warning border-1 rounded-3">
+                <div class="card-header bg-warning py-1 small fw-bold">Others (o)</div>
+                <div class="card-body py-2">
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="or" onchange="calcPerm()"><label class="form-check-label small" for="or">Read (r=4)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="ow" onchange="calcPerm()"><label class="form-check-label small" for="ow">Write (w=2)</label></div>
+                  <div class="form-check"><input class="form-check-input" type="checkbox" id="ox" onchange="calcPerm()"><label class="form-check-label small" for="ox">Execute (x=1)</label></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="code-card" id="presult"><pre>Select permissions above...</pre></div>
+        </div>
+      </div>
+      <div class="card topic-card">
+        <div class="card-header"><i class="bi bi-table"></i>Common permission values</div>
+        <div class="card-body p-0">
+          <table class="table table-hover mb-0">
+            <thead><tr><th>Symbolic</th><th>Octal</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><code>rwxr-xr-x</code></td><td><code>755</code></td><td>Owner all; group &amp; others read+exec</td></tr>
+              <tr><td><code>rw-r--r--</code></td><td><code>644</code></td><td>Owner rw; others read-only</td></tr>
+              <tr><td><code>rwx------</code></td><td><code>700</code></td><td>Owner all; no access for others</td></tr>
+              <tr><td><code>rw-rw-rw-</code></td><td><code>666</code></td><td>Everyone can read &amp; write</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 17: QUIZ -->
+    <div class="section-panel" id="sec17">
+      <div class="section-eyebrow">Test yourself</div>
+      <div class="section-title">Quick Quiz</div>
+      <div class="section-desc">10 questions across all major topics. Click an answer to check it instantly.</div>
+      <div id="quizContainer"></div>
+      <div class="d-flex align-items-center gap-3 mt-3">
+        <button class="btn btn-outline-secondary btn-sm" onclick="resetQuiz()"><i class="bi bi-arrow-counterclockwise me-1"></i>Reset quiz</button>
+        <span id="scoreDisplay" class="text-muted small"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var quiz=[
+  {q:"Which special variable holds the PID of the current shell?",o:["$0","$$","$!","$#"],a:1,e:"$$ is the PID of the current shell. $! = last background job PID, $# = argument count, $0 = script name."},
+  {q:"What does 'sed -i s/unix/linux/g file' do?",o:["Prints replaced lines to stdout","Creates a backup","Edits the file in-place permanently","Replaces first occurrence only"],a:2,e:"-i means in-place — the original file is modified directly. Always backup first with cp file file.bak"},
+  {q:"Difference between $* and $@ when double-quoted?",o:["They are always identical","\"$*\" = one string; \"$@\" = separate words","$@ includes the script name","$* counts arguments"],a:1,e:"Inside double quotes: \"$*\" expands to one string, while \"$@\" expands to separate quoted words — crucial in loops."},
+  {q:"Which AWK variable holds the number of fields in the current record?",o:["$0","NR","NF","FS"],a:2,e:"NF = Number of Fields. $NF = last field. NR = current line Number. FS = Field Separator."},
+  {q:"What does chmod 755 set?",o:["Owner: rwx, Group: r-x, Others: r-x","Owner: rwx, Group: rw-, Others: r--","Owner: r-x, Group: r-x, Others: r-x","Owner: rwx, Group: rwx, Others: rwx"],a:0,e:"7=rwx (4+2+1), 5=r-x (4+0+1), 5=r-x. Owner gets full access, group and others get read+execute only."},
+  {q:"In crontab '*/5 * * * * cmd', when does cmd run?",o:["5 times per day","Every 5 hours","Every 5 minutes","At minute 5 each hour"],a:2,e:"*/5 means 'every 5 minutes' — the */ syntax means 'every N units'. So */5 in the minute column = every 5 minutes."},
+  {q:"What command waits for a thread to complete?",o:["pthread_wait()","pthread_exit()","pthread_join()","pthread_create()"],a:2,e:"pthread_join(thread, NULL) blocks the calling thread until the specified thread finishes."},
+  {q:"What does the 'until' loop do?",o:["Loops while condition is TRUE","Loops until interrupted","Loops while condition is FALSE","Loops a fixed number of times"],a:2,e:"until is the opposite of while. It loops as long as the condition is FALSE, stops when it becomes TRUE."},
+  {q:"What is the purpose of /dev/null?",o:["Store temp files","Null terminate strings","Discard any output sent to it","Store device info"],a:2,e:"/dev/null is the 'black hole' — anything redirected to it is discarded. Useful: command > /dev/null 2>&1"},
+  {q:"Which sed command deletes lines matching a pattern?",o:["sed '/pattern/d' file","sed 's/pattern//' file","sed -d '/pattern/' file","sed '/pattern/x' file"],a:0,e:"The d command deletes lines. '/pattern/d' deletes any line matching the pattern. '5d' deletes line 5."}
+];
+var answered={}, correct=0;
+function buildQuiz(){
+  var html='';
+  quiz.forEach(function(q,i){
+    html+='<div class="card topic-card mb-3" id="qc'+i+'"><div class="card-body"><p class="fw-semibold mb-3">'+(i+1)+'. '+q.q+'</p>';
+    q.o.forEach(function(o,j){
+      html+='<button class="quiz-opt" id="qb'+i+'_'+j+'" onclick="answer('+i+','+j+')">'+String.fromCharCode(65+j)+'. '+o+'</button>';
+    });
+    html+='<div id="qf'+i+'" style="display:none;margin-top:.75rem;padding:.75rem;border-radius:7px;font-size:13px"></div></div></div>';
+  });
+  document.getElementById('quizContainer').innerHTML=html;
+}
+function answer(qi,ai){
+  if(answered[qi]) return;
+  answered[qi]=true;
+  var q=quiz[qi];
+  for(var j=0;j<q.o.length;j++){
+    var b=document.getElementById('qb'+qi+'_'+j);
+    b.disabled=true;
+    if(j===q.a) b.classList.add('correct');
+    else if(j===ai && ai!==q.a) b.classList.add('wrong');
+  }
+  if(ai===q.a) correct++;
+  var fb=document.getElementById('qf'+qi);
+  fb.style.display='block';
+  fb.style.background=ai===q.a?'#f0fdf4':'#fef2f2';
+  fb.style.border=ai===q.a?'1px solid #bbf7d0':'1px solid #fca5a5';
+  fb.style.color=ai===q.a?'#166534':'#991b1b';
+  fb.innerHTML='<strong>'+(ai===q.a?'Correct! ✓':'Incorrect. ✗')+'</strong> '+q.e;
+  var tot=Object.keys(answered).length;
+  document.getElementById('scoreDisplay').textContent='Score: '+correct+'/'+tot+' answered';
+}
+function resetQuiz(){ answered={};correct=0;document.getElementById('scoreDisplay').textContent='';buildQuiz(); }
+function show(n,el){
+  document.querySelectorAll('.section-panel').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('sec'+n).classList.add('active');
+  document.querySelectorAll('.nav-link-item').forEach(function(i){i.classList.remove('active')});
+  if(el) el.classList.add('active');
+  document.getElementById('main-content').scrollTo(0,0);
+  document.getElementById('sidebar').classList.remove('show');
+}
+function getNav(n){ return document.querySelectorAll('.nav-link-item')[n]; }
+function filterNav(v){
+  v=v.toLowerCase();
+  document.querySelectorAll('.nav-link-item').forEach(function(el){
+    var tags=el.getAttribute('data-tags')||'';
+    el.style.display=(tags.includes(v)||el.textContent.toLowerCase().includes(v))?'':'none';
+  });
+}
+function calcPerm(){
+  function v(id){return document.getElementById(id).checked?1:0;}
+  var u=v('ur')*4+v('uw')*2+v('ux');
+  var g=v('gr')*4+v('gw')*2+v('gx');
+  var o=v('or')*4+v('ow')*2+v('ox');
+  function bits(n){return (n>=4?'r':'-')+((n%4)>=2?'w':'-')+(n%2?'x':'-');}
+  document.getElementById('pdisplay').textContent='- '+bits(u)+' '+bits(g)+' '+bits(o);
+  document.getElementById('presult').innerHTML='<pre>chmod '+u+g+o+' filename\nchmod u='+bits(u).replace(/-/g,'')+',g='+bits(g).replace(/-/g,'')+',o='+bits(o).replace(/-/g,'')+' filename</pre>';
+}
+buildQuiz();
+</script>
